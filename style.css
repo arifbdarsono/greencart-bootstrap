@@ -1,80 +1,93 @@
-:root {
-  --android-green: #A4C639;
-}
-
 body {
-  background-color: #fff;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-.navbar, .btn-android {
-  background-color: var(--android-green);
+/* Warna hijau muda Android */
+.text-success {
+  color: #A4C639 !important;
 }
 
-.btn-android {
-  color: white;
-  font-weight: 600;
+.bg-success {
+  background-color: #A4C639 !important;
 }
 
-.card:hover {
-  border-color: var(--android-green);
-  box-shadow: 0 0 10px var(--android-green);
-  cursor: pointer;
+.btn-success {
+  background-color: #A4C639;
+  border-color: #8ca12f;
 }
 
-/* Cart styling */
-#cart {
+.btn-success:hover, 
+.btn-success:focus, 
+.btn-success:active {
+  background-color: #8ca12f;
+  border-color: #6f7b24;
+}
+
+/* Keranjang drawer untuk mobile */
+.cart-drawer {
   position: fixed;
-  top: 80px;
-  right: 20px;
-  width: 300px;
-  max-height: 70vh;
-  overflow-y: auto;
+  bottom: 0;
+  right: 0;
+  top: 0;
+  width: 320px;
+  max-width: 100%;
   background: white;
-  border: 2px solid var(--android-green);
-  border-radius: 8px;
-  padding: 1rem;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
   z-index: 1050;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: -2px 0 8px rgba(0,0,0,0.15);
+  will-change: transform;
 }
 
-#cart h5 {
-  color: var(--android-green);
-  font-weight: 700;
+.cart-drawer.open {
+  transform: translateX(0);
 }
 
-#cart-items {
-  list-style: none;
-  padding-left: 0;
-  margin-bottom: 1rem;
+.cart-drawer-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-#cart-items li {
+/* Produk card */
+.product-card img {
+  cursor: pointer;
+  object-fit: cover;
+  height: 180px;
+  width: 100%;
+  border-radius: 0.375rem;
+}
+
+/* Keranjang items list */
+.cart-item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+  align-items: center;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid #e4e4e4;
 }
 
-#cart-items li span.qty {
-  font-weight: 600;
-  margin: 0 0.5rem;
+.cart-item:last-child {
+  border-bottom: none;
 }
 
-#cart-empty {
-  font-style: italic;
-  color: #777;
-  text-align: center;
-  margin: 1rem 0;
+.cart-item-qty {
+  width: 4rem;
 }
 
-/* Responsive for mobile */
-@media (max-width: 768px) {
-  #cart {
-    width: 90vw;
-    max-height: 50vh;
-    right: 5vw;
-    top: auto;
-    bottom: 70px;
+.cart-item-name {
+  flex-grow: 1;
+  margin-left: 0.75rem;
+}
+
+.cart-item-price {
+  min-width: 5rem;
+  text-align: right;
+}
+
+@media (max-width: 767.98px) {
+  #cartSidebar {
+    display: none !important;
   }
 }
