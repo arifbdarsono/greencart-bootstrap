@@ -3,50 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Landing Page Produk</title>
+  <title>Landing Page Toko Online</title>
+
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
   <!-- Glightbox CSS -->
   <link href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" rel="stylesheet" />
+
   <!-- Custom CSS -->
   <link href="style.css" rel="stylesheet" />
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg">
-    <div class="container">
-      <a class="navbar-brand text-white fs-4 fw-bold" href="#">Greencart Bootstrap</a>
+  <header class="bg-light p-3 mb-4 shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+      <h1 class="h4 text-success mb-0">Toko Hijau Muda</h1>
+      <button class="btn btn-success d-md-none" id="cartToggleBtn" aria-label="Toggle Keranjang">
+        Keranjang 🛒
+      </button>
     </div>
-  </nav>
+  </header>
 
-  <!-- Main content -->
-  <div class="container my-5">
-    <h2 class="text-center mb-4" id="title">Produk Kami</h2>
-    <div class="row g-4" id="product-list">
-      <!-- Products inserted by JS -->
+  <main class="container mb-5">
+    <div class="row">
+      <!-- Produk Grid -->
+      <section class="col-md-8" id="product-list">
+        <div class="row g-3" id="productsGrid">
+          <!-- Produk akan dimuat di sini oleh JS -->
+        </div>
+      </section>
+
+      <!-- Keranjang Sidebar -->
+      <aside class="col-md-4 d-none d-md-block" id="cartSidebar">
+        <div class="card sticky-top" style="top: 20px;">
+          <div class="card-header bg-success text-white">
+            Keranjang Belanja
+          </div>
+          <div class="card-body" id="cartItemsContainer">
+            <!-- Isi keranjang muncul disini -->
+            <p class="text-muted">Keranjang kosong</p>
+          </div>
+          <div class="card-footer text-end">
+            <button class="btn btn-success" id="orderBtn" disabled>Order via WhatsApp</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Drawer Keranjang untuk mobile -->
+  <div id="cartDrawer" class="cart-drawer d-md-none">
+    <div class="cart-drawer-content shadow">
+      <div class="d-flex justify-content-between align-items-center p-3 bg-success text-white">
+        <h5 class="mb-0">Keranjang Belanja</h5>
+        <button class="btn btn-outline-light btn-sm" id="cartCloseBtn" aria-label="Tutup Keranjang">&times;</button>
+      </div>
+      <div class="p-3" id="cartItemsContainerMobile">
+        <p class="text-muted">Keranjang kosong</p>
+      </div>
+      <div class="p-3 text-end border-top">
+        <button class="btn btn-success w-100" id="orderBtnMobile" disabled>Order via WhatsApp</button>
+      </div>
     </div>
   </div>
 
-  <!-- Cart -->
-  <div id="cart" class="shadow">
-    <h5>Keranjang Belanja</h5>
-    <ul id="cart-items">
-      <li id="cart-empty">Keranjang kosong</li>
-    </ul>
-    <div class="d-flex justify-content-between fw-semibold mb-3">
-      <span>Total:</span>
-      <span id="cart-total">Rp 0</span>
-    </div>
-    <button id="order-btn" class="btn btn-android w-100" disabled>Order via WhatsApp</button>
-  </div>
-
-  <!-- Bootstrap JS Bundle -->
+  <!-- Bootstrap Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
   <!-- Glightbox JS -->
   <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+  
   <!-- Custom JS -->
   <script src="script.js"></script>
-  
 </body>
 </html>
