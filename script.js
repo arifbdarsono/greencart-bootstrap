@@ -1,191 +1,195 @@
-// Dummy data produk
+// Dummy product data
 const products = [
-  {
-    id: "p1",
-    name: "Smartphone Android",
-    price: 2500000,
-    img: "https://placehold.co/300x180/png?text=Android+Phone",
-  },
-  {
-    id: "p2",
-    name: "Headset Bluetooth",
-    price: 350000,
-    img: "https://placehold.co/300x180/png?text=Bluetooth+Headset",
-  },
-  {
-    id: "p3",
-    name: "Charger Cepat",
-    price: 150000,
-    img: "https://placehold.co/300x180/png?text=Fast+Charger",
-  },
-  {
-    id: "p4",
-    name: "Powerbank 10000mAh",
-    price: 280000,
-    img: "https://placehold.co/300x180/png?text=Powerbank",
-  }
+  { id: 1, name: "Produk A", price: 25000, image: "https://placehold.co/300x180?text=Produk+A" },
+  { id: 2, name: "Produk B", price: 50000, image: "https://placehold.co/300x180?text=Produk+B" },
+  { id: 3, name: "Produk C", price: 75000, image: "https://placehold.co/300x180?text=Produk+C" }
 ];
 
-// Keranjang: objek dengan key id produk dan value detail qty dan harga
-const cart = {};
+// Penyimpanan keranjang dalam objek { productId: { id, name, price, qty } }
+let cart = {};
 
-const productListEl = document.getElementById("productList");
-const cartSidebar = document.getElementById("cartSidebar");
-const cartItemsList = document.getElementById("cartItemsList");
-const openCartBtn = document.getElementById("openCartBtn");
-const closeCartBtn = document.getElementById("closeCartBtn");
-const orderWhatsAppBtn = document.getElementById("orderWhatsAppBtn");
-const cartCountBadge = document.getElementById("cartCountBadge");
-
-// Format angka ke Rupiah sederhana
-function formatRupiah(num) {
-  return "Rp " + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+// Helper: Format angka ke rupiah
+function formatRupiah(angka) {
+  return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(angka);
 }
 
 // Render produk ke halaman
 function renderProducts() {
+  const productListEl = document.getElementById("productList");
   productListEl.innerHTML = "";
-  products.forEach((p) => {
+  products.forEach(product => {
     const col = document.createElement("div");
-    col.className = "col-6 col-md-3 product-card";
+    col.className = "col-12 col-md-4";
 
     col.innerHTML = `
-      <div class="card h-100">
-        <img src="${p.img}" alt="${p.name}" class="card-img-top" loading="lazy" />
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title">${p.name}</h5>
-          <p class="card-text fw-bold mb-3">${formatRupiah(p.price)}</p>
-          <button class="btn btn-success mt-auto add-to-cart-btn" data-id="${p.id}">
-            Tambah ke Keranjang
-          </button>
+      <div class="card product-card shadow-sm">
+        <img src="${product.image}" alt="${product.name}" class="card-img-top" />
+        <div class="card-body">
+          <h5 class="card-title">${product.name}</h5>
+          <p class="card-text">${formatRupiah(product.price)}</p>
+          <button class="btn btn-success w-100" data-id="${product.id}"><i class="fa fa-cart-plus"></i> Tambah ke Keranjang</button>
         </div>
       </div>
     `;
+
     productListEl.appendChild(col);
   });
 }
 
-// Render isi keranjang
+// Render keranjang belanja
 function renderCart() {
-  const ids = Object.keys(cart);
+  const cartItemsList = document.getElementById("cartItemsList");
   cartItemsList.innerHTML = "";
 
-  if (ids.length === 0) {
-    cartItemsList.innerHTML = `<p class="text-center mt-4 text-muted">Keranjang kosong.</p>`;
-  } else {
-    ids.forEach((id) => {
-      const item = cart[id];
-      const row = document.createElement("div");
-      row.className = "cart-item";
-
-      row.innerHTML = `
-        <span class="cart-item-name" title="${item.name}">${item.name}</span>
-        <input type="number" min="1" value="${item.qty}" class="cart-item-qty form-control form-control-sm" data-id="${id}" aria-label="Jumlah ${item.name}" />
-        <span class="cart-item-price">${formatRupiah(item.price * item.qty)}</span>
-        <button class="btn btn-sm btn-outline-danger ms-2 remove-cart-btn" data-id="${id}" aria-label="Hapus ${item.name}">&times;</button>
-      `;
-
-      cartItemsList.appendChild(row);
-    });
+  const itemIds = Object.keys(cart);
+  if (itemIds.length === 0) {
+    cartItemsList.innerHTML = '<p class="text-center text-muted">Keranjang kosong</p>';
+    document.getElementById("orderWhatsAppBtn").disabled = true;
+    updateCartBadge();
+    updateTotal();
+    return;
   }
 
-  updateCartCount();
-  updateOrderButton();
+  itemIds.forEach(id => {
+    const item = cart[id];
+    const cartItemEl = document.createElement("div");
+    cartItemEl.className = "cart-item d-flex align-items-center";
+
+    cartItemEl.innerHTML = `
+      <img src="${products.find(p => p.id == id).image}" alt="${item.name}" width="48" height="48" style="border-radius:0.375rem; object-fit:cover;" />
+      <div class="cart-item-name ms-2">${item.name}</div>
+      <div class="cart-item-qty">
+        <input type="number" min="1" max="99" value="${item.qty}" data-id="${id}" aria-label="Jumlah ${item.name}" />
+      </div>
+      <div class="cart-item-price ms-3">${formatRupiah(item.price * item.qty)}</div>
+      <button class="btn btn-link text-danger p-0 ms-3 remove-item-btn" data-id="${id}" aria-label="Hapus ${item.name}"><i class="fa fa-trash"></i></button>
+    `;
+
+    cartItemsList.appendChild(cartItemEl);
+  });
+
+  document.getElementById("orderWhatsAppBtn").disabled = false;
+  updateCartBadge();
+  updateTotal();
+
+  // Tambah event listener untuk mengubah qty
+  const qtyInputs = cartItemsList.querySelectorAll("input[type=number]");
+  qtyInputs.forEach(input => {
+    input.addEventListener("change", onQtyChange);
+  });
+
+  // Event hapus item
+  const removeBtns = cartItemsList.querySelectorAll(".remove-item-btn");
+  removeBtns.forEach(btn => {
+    btn.addEventListener("click", onRemoveItem);
+  });
+}
+
+// Update total harga di footer keranjang
+function updateTotal() {
+  const totalEl = document.getElementById("cartTotal");
+  const total = Object.values(cart).reduce((sum, item) => sum + item.price * item.qty, 0);
+  totalEl.textContent = formatRupiah(total);
 }
 
 // Update badge jumlah item di tombol keranjang
-function updateCartCount() {
+function updateCartBadge() {
+  const badgeEl = document.getElementById("cartBadge");
   const totalQty = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
-  cartCountBadge.textContent = totalQty;
-  cartCountBadge.style.display = totalQty > 0 ? "inline-block" : "none";
+  if (totalQty > 0) {
+    badgeEl.textContent = totalQty;
+    badgeEl.style.display = "inline-block";
+  } else {
+    badgeEl.style.display = "none";
+  }
 }
 
-// Update tombol order whatsapp
-function updateOrderButton() {
-  orderWhatsAppBtn.disabled = Object.keys(cart).length === 0;
+// Fungsi handle perubahan qty input
+function onQtyChange(e) {
+  const input = e.target;
+  let newQty = parseInt(input.value);
+  if (isNaN(newQty) || newQty < 1) newQty = 1;
+  if (newQty > 99) newQty = 99;
+  input.value = newQty;
+
+  const id = input.dataset.id;
+  if (cart[id]) {
+    cart[id].qty = newQty;
+  }
+  renderCart();
+}
+
+// Fungsi menghapus item dari keranjang
+function onRemoveItem(e) {
+  const id = e.currentTarget.dataset.id;
+  if (cart[id]) {
+    delete cart[id];
+  }
+  renderCart();
 }
 
 // Tambah produk ke keranjang
 function addToCart(id) {
+  const product = products.find(p => p.id == id);
+  if (!product) return;
+
   if (cart[id]) {
     cart[id].qty++;
   } else {
-    const product = products.find((p) => p.id === id);
-    if (!product) return;
-    cart[id] = { ...product, qty: 1 };
+    cart[id] = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      qty: 1
+    };
   }
   renderCart();
-  openCartSidebar();
+  openCart();
 }
 
-// Remove produk dari keranjang
-function removeFromCart(id) {
-  if (cart[id]) {
-    delete cart[id];
-    renderCart();
-  }
-}
+// Buka dan tutup keranjang drawer
+const cartSidebar = document.getElementById("cartSidebar");
+const openCartBtn = document.getElementById("openCartBtn");
+const closeCartBtn = document.getElementById("closeCartBtn");
 
-// Update kuantitas item di keranjang
-function updateQty(id, qty) {
-  if (qty < 1) return;
-  if (cart[id]) {
-    cart[id].qty = qty;
-    renderCart();
-  }
-}
-
-// Buka keranjang
-function openCartSidebar() {
+function openCart() {
   cartSidebar.classList.add("open");
 }
 
-// Tutup keranjang
-function closeCartSidebar() {
+function closeCart() {
   cartSidebar.classList.remove("open");
 }
 
-// Event handler kirim order via WhatsApp
-function orderViaWhatsApp() {
-  const phoneNumber = "62895332782122"; // Ganti dengan nomor WhatsApp penerima tanpa + atau 0 di depan
-  const ids = Object.keys(cart);
-  if (ids.length === 0) return;
+openCartBtn.addEventListener("click", openCart);
+closeCartBtn.addEventListener("click", closeCart);
+
+// Tombol order via WhatsApp
+const orderBtn = document.getElementById("orderWhatsAppBtn");
+orderBtn.addEventListener("click", () => {
+  if (Object.keys(cart).length === 0) return;
 
   let message = "Halo, saya ingin memesan produk:\n";
-  ids.forEach((id) => {
+  Object.keys(cart).forEach(id => {
     const item = cart[id];
     message += `- ${item.name} (x${item.qty}) - ${formatRupiah(item.price * item.qty)}\n`;
   });
-  message += "\nTerima kasih.";
+  message += `Total: ${formatRupiah(Object.values(cart).reduce((sum, item) => sum + item.price * item.qty, 0))}\n\nTerima kasih.`;
 
-  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-  window.open(url, "_blank");
-}
+  // Ganti nomor di bawah dengan nomor WhatsApp tujuan Anda (dengan kode negara tanpa tanda +)
+  const phoneNumber = "6281234567890";
 
-// Event listeners
-document.addEventListener("click", (e) => {
-  if (e.target.classList.contains("add-to-cart-btn")) {
-    const id = e.target.getAttribute("data-id");
-    addToCart(id);
-  }
-  if (e.target.classList.contains("remove-cart-btn")) {
-    const id = e.target.getAttribute("data-id");
-    removeFromCart(id);
-  }
+  const waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  window.open(waUrl, "_blank");
 });
 
-cartItemsList.addEventListener("change", (e) => {
-  if (e.target.classList.contains("cart-item-qty")) {
-    const id = e.target.getAttribute("data-id");
-    const qty = parseInt(e.target.value);
-    if (!isNaN(qty)) updateQty(id, qty);
-  }
-});
-
-openCartBtn.addEventListener("click", openCartSidebar);
-closeCartBtn.addEventListener("click", closeCartSidebar);
-orderWhatsAppBtn.addEventListener("click", orderViaWhatsApp);
-
-// Inisialisasi tampilan
+// Inisialisasi render produk dan keranjang
 renderProducts();
 renderCart();
+
+// Delegasi event klik tombol tambah ke keranjang
+document.getElementById("productList").addEventListener("click", e => {
+  if (e.target.closest("button[data-id]")) { 
+    const id = e.target.closest("button[data-id]").dataset.id;
+    addToCart(id);
+  }
+});
