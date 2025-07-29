@@ -74,16 +74,38 @@ body {
 
 .cart-item-qty {
   width: 4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .cart-item-name {
   flex-grow: 1;
   margin-left: 0.75rem;
+  word-break: break-word;
 }
 
 .cart-item-price {
   min-width: 5rem;
   text-align: right;
+  white-space: nowrap;
+}
+
+/* Tombol qty */
+.qty-btn {
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 1px solid #ccc;
+  background: none;
+  border-radius: 0.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+  user-select: none;
+}
+
+.qty-btn:hover {
+  background-color: #e4e4e4;
 }
 
 @media (max-width: 767.98px) {
