@@ -125,7 +125,7 @@ function renderCart() {
 
 // Kirim order via WhatsApp
 function orderViaWhatsapp() {
-  const phoneNumber = "6281234567890"; // Ganti dengan nomor WhatsApp tujuan (format internasional tanpa tanda +)
+  const phoneNumber = "62895332782122"; // Ganti dengan nomor WhatsApp tujuan (format internasional tanpa tanda +)
   const ids = Object.keys(cart);
   if(ids.length === 0) return alert("Keranjang kosong.");
 
