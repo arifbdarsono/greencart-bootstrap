@@ -4,28 +4,28 @@ const products = [
     id: 1,
     name: "Smartphone Android X",
     price: 3500000,
-    img: "https://via.placeholder.com/300x200.png?text=Smartphone+Android+X",
+    img: "https://placehold.co/300x200.png?text=Smartphone+Android+X",
     description: "Smartphone canggih dengan fitur terbaru."
   },
   {
     id: 2,
     name: "Smartwatch Android Fit",
     price: 1200000,
-    img: "https://via.placeholder.com/300x200.png?text=Smartwatch+Android+Fit",
+    img: "https://placehold.co/300x200.png?text=Smartwatch+Android+Fit",
     description: "Jam tangan pintar dengan berbagai fitur kesehatan."
   },
   {
     id: 3,
     name: "Wireless Earbuds Android",
     price: 700000,
-    img: "https://via.placeholder.com/300x200.png?text=Wireless+Earbuds+Android",
+    img: "https://placehold.co/300x200.png?text=Wireless+Earbuds+Android",
     description: "Earbuds nirkabel dengan suara jernih dan bass mantap."
   },
   {
     id: 4,
     name: "Tablet Android Pro",
     price: 4800000,
-    img: "https://via.placeholder.com/300x200.png?text=Tablet+Android+Pro",
+    img: "https://placehold.co/300x200.png?text=Tablet+Android+Pro",
     description: "Tablet performa tinggi untuk bekerja dan hiburan."
   }
 ];
