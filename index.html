@@ -3,45 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Landing Page dengan Keranjang Belanja</title>
+  <title>Landing Page with Cart</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="style.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="bg-success text-white p-3 text-center">
-    <h1>Toko Online Android</h1>
-    <p>Produk Berkualitas dengan Harga Terjangkau</p>
-  </header>
 
-  <main class="container my-4">
-    <div class="row" id="productList">
-      <!-- Produk akan di-render oleh JS -->
+<header class="bg-success text-white p-3 text-center">
+  <h1>Produk Pilihan</h1>
+</header>
+
+<main class="container my-4">
+  <div class="row" id="productList">
+    <!-- Produk akan di-generate oleh JS -->
+  </div>
+</main>
+
+<!-- Keranjang Drawer -->
+<div class="cart-drawer" id="cartSidebar" aria-label="Keranjang belanja">
+  <div class="cart-drawer-content d-flex flex-column">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+      <h5 class="m-0">Keranjang Belanja <i class="fa fa-shopping-cart"></i></h5>
+      <button id="closeCartBtn" class="btn btn-outline-danger btn-sm" aria-label="Tutup keranjang"><i class="fa fa-times"></i></button>
     </div>
-  </main>
 
-  <!-- Keranjang drawer -->
-  <div class="cart-drawer" id="cartSidebar" aria-label="Keranjang Belanja">
-    <div class="cart-drawer-content d-flex flex-column">
-      <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Keranjang Belanja</h5>
-        <button id="closeCartBtn" class="btn btn-outline-secondary btn-sm" aria-label="Tutup Keranjang">&times;</button>
+    <div class="cart-items-wrapper flex-grow-1 overflow-auto px-3" id="cartItemsList">
+      <!-- List item keranjang -->
+    </div>
+
+    <div class="cart-footer p-3 border-top">
+      <div class="d-flex justify-content-between mb-2">
+        <strong>Total:</strong>
+        <strong id="cartTotal">Rp 0</strong>
       </div>
-      <div class="cart-items-wrapper flex-grow-1 overflow-auto p-3" id="cartItemsList">
-        <!-- Item keranjang muncul di sini -->
-      </div>
-      <div class="cart-footer">
-        <button id="orderWhatsAppBtn" class="btn btn-success" disabled>
-          Order via WhatsApp
-        </button>
-      </div>
+      <button id="orderWhatsAppBtn" class="btn btn-success w-100" disabled>
+        <i class="fab fa-whatsapp"></i> Order via WhatsApp
+      </button>
     </div>
   </div>
+</div>
 
-  <!-- Tombol buka keranjang di mobile -->
-  <button id="openCartBtn" class="btn btn-success open-cart-btn" aria-label="Buka Keranjang">
-    🛒 <span id="cartCountBadge" class="badge bg-light text-success">0</span>
-  </button>
+<!-- Tombol buka keranjang -->
+<button id="openCartBtn" class="btn btn-success rounded-circle shadow-sm" aria-label="Buka keranjang" title="Buka keranjang">
+  <i class="fa fa-shopping-cart"></i>
+  <span id="cartBadge" class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill" style="display:none;"></span>
+</button>
 
-  <script src="script.js"></script>
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
