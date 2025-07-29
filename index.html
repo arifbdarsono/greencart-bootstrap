@@ -3,54 +3,88 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Landing Page with Cart</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <title>Landing Page dengan Keranjang Belanja</title>
+
+  <!-- Bootstrap CSS CDN -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <!-- Font Awesome CSS CDN -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    rel="stylesheet"
+  />
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
-<header class="bg-success text-white p-3 text-center">
-  <h1>Produk Pilihan</h1>
-</header>
-
-<main class="container my-4">
-  <div class="row" id="productList">
-    <!-- Produk akan di-generate oleh JS -->
-  </div>
-</main>
-
-<!-- Keranjang Drawer -->
-<div class="cart-drawer" id="cartSidebar" aria-label="Keranjang belanja">
-  <div class="cart-drawer-content d-flex flex-column">
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-      <h5 class="m-0">Keranjang Belanja <i class="fa fa-shopping-cart"></i></h5>
-      <button id="closeCartBtn" class="btn btn-outline-danger btn-sm" aria-label="Tutup keranjang"><i class="fa fa-times"></i></button>
-    </div>
-
-    <div class="cart-items-wrapper flex-grow-1 overflow-auto px-3" id="cartItemsList">
-      <!-- List item keranjang -->
-    </div>
-
-    <div class="cart-footer p-3 border-top">
-      <div class="d-flex justify-content-between mb-2">
-        <strong>Total:</strong>
-        <strong id="cartTotal">Rp 0</strong>
-      </div>
-      <button id="orderWhatsAppBtn" class="btn btn-success w-100" disabled>
-        <i class="fab fa-whatsapp"></i> Order via WhatsApp
+  <nav class="navbar bg-success navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <i class="fas fa-store"></i> Toko Online
+      </a>
+      <button
+        class="btn btn-outline-light position-relative"
+        id="cartToggleBtn"
+        aria-label="Buka Keranjang"
+      >
+        <i class="fas fa-shopping-cart"></i>
+        <span
+          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+          id="cartCountBadge"
+          >0</span
+        >
       </button>
     </div>
-  </div>
-</div>
+  </nav>
 
-<!-- Tombol buka keranjang -->
-<button id="openCartBtn" class="btn btn-success rounded-circle shadow-sm" aria-label="Buka keranjang" title="Buka keranjang">
-  <i class="fa fa-shopping-cart"></i>
-  <span id="cartBadge" class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill" style="display:none;"></span>
-</button>
+  <main class="container my-4">
+    <div class="row" id="productList">
+      <!-- Product cards akan dirender di sini oleh JS -->
+    </div>
+  </main>
 
-<script src="script.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <aside class="cart-drawer" id="cartSidebar" aria-label="Keranjang Belanja">
+    <div class="cart-drawer-content d-flex flex-column h-100">
+      <div
+        class="d-flex justify-content-between align-items-center p-3 border-bottom"
+      >
+        <h5 class="mb-0"><i class="fas fa-shopping-cart"></i> Keranjang Anda</h5>
+        <button
+          id="closeCartBtn"
+          class="btn btn-sm btn-outline-secondary"
+          aria-label="Tutup Keranjang"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="cart-items-wrapper flex-grow-1 overflow-auto px-3" id="cartItemsList">
+        <!-- Item keranjang akan dirender di sini -->
+      </div>
+
+      <div class="cart-footer p-3 border-top bg-light">
+        <div class="d-flex justify-content-between mb-3 fw-semibold">
+          <span>Total Belanja:</span>
+          <span id="cartTotalPrice">Rp0</span>
+        </div>
+        <button
+          id="orderWhatsAppBtn"
+          class="btn btn-success w-100"
+          disabled
+          aria-disabled="true"
+          title="Order via WhatsApp"
+        >
+          <i class="fab fa-whatsapp"></i> Order via WhatsApp
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Bootstrap JS Bundle CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JS -->
+  <script src="script.js"></script>
 </body>
 </html>
