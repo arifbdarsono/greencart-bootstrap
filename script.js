@@ -44,7 +44,7 @@ const orderBtnMobile = document.getElementById("orderBtnMobile");
 const cartCountMobile = document.getElementById("cart-count-mobile");
 
 // Nomor WhatsApp tujuan (isi dengan nomor Anda, tanpa tanda + atau spasi)
-const waNumber = "6281234567890";
+const waNumber = "62895332782122";
 
 // Fungsi utilitas format rupiah
 function formatRupiah(number) {
