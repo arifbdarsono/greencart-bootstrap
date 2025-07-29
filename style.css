@@ -1,0 +1,80 @@
+:root {
+  --android-green: #A4C639;
+}
+
+body {
+  background-color: #fff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar, .btn-android {
+  background-color: var(--android-green);
+}
+
+.btn-android {
+  color: white;
+  font-weight: 600;
+}
+
+.card:hover {
+  border-color: var(--android-green);
+  box-shadow: 0 0 10px var(--android-green);
+  cursor: pointer;
+}
+
+/* Cart styling */
+#cart {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  width: 300px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: white;
+  border: 2px solid var(--android-green);
+  border-radius: 8px;
+  padding: 1rem;
+  z-index: 1050;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+#cart h5 {
+  color: var(--android-green);
+  font-weight: 700;
+}
+
+#cart-items {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 1rem;
+}
+
+#cart-items li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+#cart-items li span.qty {
+  font-weight: 600;
+  margin: 0 0.5rem;
+}
+
+#cart-empty {
+  font-style: italic;
+  color: #777;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+/* Responsive for mobile */
+@media (max-width: 768px) {
+  #cart {
+    width: 90vw;
+    max-height: 50vh;
+    right: 5vw;
+    top: auto;
+    bottom: 70px;
+  }
+}
