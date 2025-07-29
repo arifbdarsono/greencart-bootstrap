@@ -1,228 +1,191 @@
 // Dummy data produk
 const products = [
   {
-    id: 1,
-    name: "Produk A",
-    price: 100000,
-    image: "https://placehold.co/600x400?text=Produk+A"
+    id: "p1",
+    name: "Smartphone Android",
+    price: 2500000,
+    img: "https://placehold.co/300x180/png?text=Android+Phone",
   },
   {
-    id: 2,
-    name: "Produk B",
+    id: "p2",
+    name: "Headset Bluetooth",
+    price: 350000,
+    img: "https://placehold.co/300x180/png?text=Bluetooth+Headset",
+  },
+  {
+    id: "p3",
+    name: "Charger Cepat",
     price: 150000,
-    image: "https://placehold.co/600x400?text=Produk+B"
+    img: "https://placehold.co/300x180/png?text=Fast+Charger",
   },
   {
-    id: 3,
-    name: "Produk C",
-    price: 200000,
-    image: "https://placehold.co/600x400?text=Produk+C"
-  },
-  {
-    id: 4,
-    name: "Produk D",
-    price: 120000,
-    image: "https://placehold.co/600x400?text=Produk+D"
+    id: "p4",
+    name: "Powerbank 10000mAh",
+    price: 280000,
+    img: "https://placehold.co/300x180/png?text=Powerbank",
   }
 ];
 
-// Keranjang belanja (object dengan id produk sebagai key)
-let cart = {};
+// Keranjang: objek dengan key id produk dan value detail qty dan harga
+const cart = {};
 
-// Elemen DOM
-const productList = document.getElementById("product-list");
-const cartItems = document.getElementById("cart-items");
-const cartTotal = document.getElementById("cart-total");
-const orderBtn = document.getElementById("orderBtn");
+const productListEl = document.getElementById("productList");
 const cartSidebar = document.getElementById("cartSidebar");
-const cartToggleBtn = document.getElementById("cartToggleBtn");
-const cartDrawer = document.getElementById("cartDrawer");
-const cartCloseBtn = document.getElementById("cartCloseBtn");
-const cartItemsMobile = document.getElementById("cart-items-mobile");
-const cartTotalMobile = document.getElementById("cart-total-mobile");
-const orderBtnMobile = document.getElementById("orderBtnMobile");
-const cartCountMobile = document.getElementById("cart-count-mobile");
+const cartItemsList = document.getElementById("cartItemsList");
+const openCartBtn = document.getElementById("openCartBtn");
+const closeCartBtn = document.getElementById("closeCartBtn");
+const orderWhatsAppBtn = document.getElementById("orderWhatsAppBtn");
+const cartCountBadge = document.getElementById("cartCountBadge");
 
-// Nomor WhatsApp tujuan (isi dengan nomor Anda, tanpa tanda + atau spasi)
-const waNumber = "62895332782122";
-
-// Fungsi utilitas format rupiah
-function formatRupiah(number) {
-  return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(number);
+// Format angka ke Rupiah sederhana
+function formatRupiah(num) {
+  return "Rp " + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-// Inisialisasi Glightbox
-const lightbox = GLightbox({
-  selector: ".glightbox"
-});
-
-// Render daftar produk
+// Render produk ke halaman
 function renderProducts() {
-  products.forEach(product => {
+  productListEl.innerHTML = "";
+  products.forEach((p) => {
     const col = document.createElement("div");
-    col.className = "col-12 col-sm-6 col-md-4 col-lg-3 mb-4";
+    col.className = "col-6 col-md-3 product-card";
+
     col.innerHTML = `
-      <div class="card product-card h-100 shadow-sm">
-        <a href="${product.image}" class="glightbox" data-gallery="products" title="${product.name}">
-          <img src="${product.image}" class="card-img-top" alt="${product.name}" loading="lazy" />
-        </a>
+      <div class="card h-100">
+        <img src="${p.img}" alt="${p.name}" class="card-img-top" loading="lazy" />
         <div class="card-body d-flex flex-column">
-          <h5 class="card-title">${product.name}</h5>
-          <p class="card-text text-success fw-bold">${formatRupiah(product.price)}</p>
-          <button class="btn btn-success mt-auto" data-id="${product.id}">Tambah ke Keranjang</button>
+          <h5 class="card-title">${p.name}</h5>
+          <p class="card-text fw-bold mb-3">${formatRupiah(p.price)}</p>
+          <button class="btn btn-success mt-auto add-to-cart-btn" data-id="${p.id}">
+            Tambah ke Keranjang
+          </button>
         </div>
       </div>
     `;
-    productList.appendChild(col);
+    productListEl.appendChild(col);
   });
+}
 
-  // Setelah elemen dibuat, inisialisasi ulang lightbox
-  lightbox.reload();
+// Render isi keranjang
+function renderCart() {
+  const ids = Object.keys(cart);
+  cartItemsList.innerHTML = "";
 
-  // Tambah event listener tombol
-  document.querySelectorAll(".btn-success[data-id]").forEach(button => {
-    button.addEventListener("click", () => {
-      addToCart(parseInt(button.dataset.id));
+  if (ids.length === 0) {
+    cartItemsList.innerHTML = `<p class="text-center mt-4 text-muted">Keranjang kosong.</p>`;
+  } else {
+    ids.forEach((id) => {
+      const item = cart[id];
+      const row = document.createElement("div");
+      row.className = "cart-item";
+
+      row.innerHTML = `
+        <span class="cart-item-name" title="${item.name}">${item.name}</span>
+        <input type="number" min="1" value="${item.qty}" class="cart-item-qty form-control form-control-sm" data-id="${id}" aria-label="Jumlah ${item.name}" />
+        <span class="cart-item-price">${formatRupiah(item.price * item.qty)}</span>
+        <button class="btn btn-sm btn-outline-danger ms-2 remove-cart-btn" data-id="${id}" aria-label="Hapus ${item.name}">&times;</button>
+      `;
+
+      cartItemsList.appendChild(row);
     });
-  });
+  }
+
+  updateCartCount();
+  updateOrderButton();
+}
+
+// Update badge jumlah item di tombol keranjang
+function updateCartCount() {
+  const totalQty = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
+  cartCountBadge.textContent = totalQty;
+  cartCountBadge.style.display = totalQty > 0 ? "inline-block" : "none";
+}
+
+// Update tombol order whatsapp
+function updateOrderButton() {
+  orderWhatsAppBtn.disabled = Object.keys(cart).length === 0;
 }
 
 // Tambah produk ke keranjang
-function addToCart(productId) {
-  if (cart[productId]) {
-    cart[productId].qty += 1;
+function addToCart(id) {
+  if (cart[id]) {
+    cart[id].qty++;
   } else {
-    const product = products.find(p => p.id === productId);
+    const product = products.find((p) => p.id === id);
     if (!product) return;
-    cart[productId] = { ...product, qty: 1 };
+    cart[id] = { ...product, qty: 1 };
   }
-  updateCartUI();
+  renderCart();
+  openCartSidebar();
 }
 
-// Hapus 1 qty produk dari keranjang
-function removeFromCart(productId) {
-  if (!cart[productId]) return;
-  cart[productId].qty -= 1;
-  if (cart[productId].qty <= 0) {
-    delete cart[productId];
+// Remove produk dari keranjang
+function removeFromCart(id) {
+  if (cart[id]) {
+    delete cart[id];
+    renderCart();
   }
-  updateCartUI();
 }
 
-// Hapus produk sepenuhnya dari keranjang
-function deleteFromCart(productId) {
-  if (!cart[productId]) return;
-  delete cart[productId];
-  updateCartUI();
+// Update kuantitas item di keranjang
+function updateQty(id, qty) {
+  if (qty < 1) return;
+  if (cart[id]) {
+    cart[id].qty = qty;
+    renderCart();
+  }
 }
 
-// Update tampilan keranjang
-function updateCartUI() {
-  // Update desktop sidebar
-  cartItems.innerHTML = "";
-  let total = 0;
+// Buka keranjang
+function openCartSidebar() {
+  cartSidebar.classList.add("open");
+}
+
+// Tutup keranjang
+function closeCartSidebar() {
+  cartSidebar.classList.remove("open");
+}
+
+// Event handler kirim order via WhatsApp
+function orderViaWhatsApp() {
+  const phoneNumber = "62895332782122"; // Ganti dengan nomor WhatsApp penerima tanpa + atau 0 di depan
   const ids = Object.keys(cart);
-  if (ids.length === 0) {
-    cartItems.innerHTML = "<p>Keranjang kosong</p>";
-    orderBtn.disabled = true;
-  } else {
-    ids.forEach(id => {
-      const item = cart[id];
-      total += item.price * item.qty;
-
-      const itemDiv = document.createElement("div");
-      itemDiv.className = "cart-item";
-
-      itemDiv.innerHTML = `
-        <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-qty">
-          <button class="qty-btn" aria-label="Kurangi jumlah" data-action="minus" data-id="${id}">-</button>
-          <span>${item.qty}</span>
-          <button class="qty-btn" aria-label="Tambah jumlah" data-action="plus" data-id="${id}">+</button>
-        </div>
-        <div class="cart-item-price">${formatRupiah(item.price * item.qty)}</div>
-      `;
-
-      cartItems.appendChild(itemDiv);
-    });
-    orderBtn.disabled = false;
-  }
-  cartTotal.textContent = formatRupiah(total);
-
-  // Update mobile drawer
-  cartItemsMobile.innerHTML = cartItems.innerHTML;
-  cartTotalMobile.textContent = formatRupiah(total);
-  orderBtnMobile.disabled = orderBtn.disabled;
-
-  // Update mobile cart count badge
-  let count = 0;
-  ids.forEach(id => { count += cart[id].qty; });
-  cartCountMobile.textContent = count;
-}
-
-// Event delegation tombol qty di keranjang desktop
-cartItems.addEventListener("click", e => {
-  if (e.target.classList.contains("qty-btn")) {
-    const id = e.target.dataset.id;
-    if (e.target.dataset.action === "plus") {
-      addToCart(parseInt(id));
-    } else if (e.target.dataset.action === "minus") {
-      removeFromCart(id);
-    }
-  }
-});
-
-// Event delegation tombol qty di keranjang mobile
-cartItemsMobile.addEventListener("click", e => {
-  if (e.target.classList.contains("qty-btn")) {
-    const id = e.target.dataset.id;
-    if (e.target.dataset.action === "plus") {
-      addToCart(parseInt(id));
-    } else if (e.target.dataset.action === "minus") {
-      removeFromCart(id);
-    }
-  }
-});
-
-// Tombol order via WhatsApp (desktop)
-orderBtn.addEventListener("click", () => {
-  sendOrderViaWhatsApp();
-});
-
-// Tombol order via WhatsApp (mobile)
-orderBtnMobile.addEventListener("click", () => {
-  sendOrderViaWhatsApp();
-});
-
-// Kirim order via WhatsApp
-function sendOrderViaWhatsApp() {
-  const ids = Object.keys(cart);
-  if (ids.length === 0) return alert("Keranjang belanja masih kosong!");
+  if (ids.length === 0) return;
 
   let message = "Halo, saya ingin memesan produk:\n";
-  ids.forEach(id => {
+  ids.forEach((id) => {
     const item = cart[id];
     message += `- ${item.name} (x${item.qty}) - ${formatRupiah(item.price * item.qty)}\n`;
   });
-  message += `Total: ${formatRupiah(
-    ids.reduce((sum, id) => sum + cart[id].price * cart[id].qty, 0)
-  )}\n\nTerima kasih!`;
+  message += "\nTerima kasih.";
 
-  const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
-  window.open(waUrl, "_blank");
+  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
 }
 
-// Toggle keranjang drawer mobile
-cartToggleBtn.addEventListener("click", () => {
-  cartDrawer.classList.add("open");
+// Event listeners
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("add-to-cart-btn")) {
+    const id = e.target.getAttribute("data-id");
+    addToCart(id);
+  }
+  if (e.target.classList.contains("remove-cart-btn")) {
+    const id = e.target.getAttribute("data-id");
+    removeFromCart(id);
+  }
 });
 
-cartCloseBtn.addEventListener("click", () => {
-  cartDrawer.classList.remove("open");
+cartItemsList.addEventListener("change", (e) => {
+  if (e.target.classList.contains("cart-item-qty")) {
+    const id = e.target.getAttribute("data-id");
+    const qty = parseInt(e.target.value);
+    if (!isNaN(qty)) updateQty(id, qty);
+  }
 });
 
-// Inisialisasi produk dan keranjang saat halaman siap
-document.addEventListener("DOMContentLoaded", () => {
-  renderProducts();
-  updateCartUI();
-});
+openCartBtn.addEventListener("click", openCartSidebar);
+closeCartBtn.addEventListener("click", closeCartSidebar);
+orderWhatsAppBtn.addEventListener("click", orderViaWhatsApp);
+
+// Inisialisasi tampilan
+renderProducts();
+renderCart();
